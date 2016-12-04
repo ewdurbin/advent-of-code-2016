@@ -1,14 +1,18 @@
 #!/usr/bin/env/python
 
 import sys
-
+import string
 import operator
 from collections import Counter, defaultdict
 
+def caesar(plaintext, shift):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
+    table = string.maketrans(alphabet, shifted_alphabet)
+    return plaintext.translate(table)
+
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
-    real_rooms = 0
-    sum_sectorids = 0
     for row in input_data:
         words = row.split('-')[:-1]
         [sectorid, checksum] = row.split('-')[-1].split('[')
@@ -22,9 +26,9 @@ def main():
         for winner in sorted(chars, reverse=True):
            calculated_checksum += ''.join(sorted(chars[winner]))
         if calculated_checksum[:5] == checksum:
-            sum_sectorids += int(sectorid)
-    print sum_sectorids
-        
+            decoded = caesar(' '.join(words), int(sectorid) % 26)
+            if 'north' in decoded:
+                print sectorid, decoded
 
 if __name__ == '__main__':
     main()
