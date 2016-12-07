@@ -5,21 +5,22 @@ import sys
 
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
-    tls_support = 0
+    ssl_support = 0
     for line in input_data:
         bracketed = re.findall(r"\[([A-Za-z0-9_]+)\]", line)
-        supports = None
-        for i in range(len(line)-3):
-            if supports == False:
+        for b in bracketed:
+            line = line.replace('[%s]' % (b,), '')
+        supports = False
+        for i in range(len(line)-2):
+            if supports:
                 break
-            if line[i:i+2] == line[i+2:i+4][::-1] and line[i] != line[i+1]:
-                supports = True
+            if line[i] == line[i+2] and line[i] != line[i+1]:
                 for b in bracketed:
-                    if line[i:i+4] in b:
-                        supports = False
+                    if '%s%s%s' % (line[i+1], line[i], line[i+1]) in b:
+                        supports = True
         if supports:
-            tls_support += 1
-    print(tls_support)
+            ssl_support += 1
+    print(ssl_support)
         
 
 if __name__ == '__main__':
