@@ -35,6 +35,8 @@ def main():
             if column == '#':
                 lit_pixels += 1
     print(lit_pixels)
+    for row in display:
+        print(''.join(row))
 
 if __name__ == '__main__':
     main()
