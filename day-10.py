@@ -31,5 +31,7 @@ def main():
         state[bots[bot]['high']].append(high)
         del state[bot]
 
+    print('Part 2: {}'.format(state['output-0'][0] * state['output-1'][0] * state['output-2'][0]))
+
 if __name__ == '__main__':
     main()
