@@ -91,16 +91,20 @@ def main():
                 state[i].append('chip-' + floor.split()[j-1].split('-')[0])
     generation = [State(state, 0)]
     moves = 0
+    known_states = [x.__repr__() for x in generation]
     while True:
         moves += 1
         print('moves: {}'.format(moves))
+        print('generation: {}'.format(len(generation)))
+        print('known: {}'.format(len(known_states)))
         new_generation = []
         for state in generation:
             new_generation += state.iterate()
         if any([x.solved() for x in new_generation]):
             print('solved in {} moves'.format(moves))
             break
-        generation = new_generation
+        generation = [x for x in new_generation if x.__repr__() not in known_states]
+        known_states += [x.__repr__() for x in new_generation if x.__repr__() not in known_states]
 
 if __name__ == '__main__':
     main()
