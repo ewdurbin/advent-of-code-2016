@@ -1,15 +1,16 @@
 #!/usr/bin/env/python
 
 import itertools
-import collections
 import copy
 import string
 import sys
+import Queue
 
 class State(object):
-    def __init__(self, floors, elevator):
+    def __init__(self, floors, elevator, moves):
         self.floors = floors
         self.elevator = elevator
+        self.moves = moves
 
     def __repr__(self):
         output = []
@@ -36,7 +37,14 @@ class State(object):
         for item in items:
             floors[self.elevator].remove(item)
             floors[dest_floor] += [item]
-        return State(floors, dest_floor)
+        return State(floors, dest_floor, self.moves + 1)
+
+    @property
+    def score(self):
+        score = 0
+        for i, floor in enumerate(self.floors):
+            score += -i * len(floor)
+        return score
 
     def iterate(self):
         if self.elevator == 0:
@@ -80,7 +88,7 @@ class State(object):
                     seen_elements[element] = identifiers.pop(0)
                 parts[1] = seen_elements[element]
                 new_floors[i].append('-'.join(parts))
-        return State(new_floors, self.elevator).__repr__()
+        return State(new_floors, self.elevator, self.moves).__repr__()
 
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
@@ -92,22 +100,24 @@ def main():
                 state[i].append('gen-' + floor.split()[j-1])
             if word in ('microchip', 'microchip.', 'microchip,'):
                 state[i].append('chip-' + floor.split()[j-1].split('-')[0])
-    generation = [State(state, 0)]
-    moves = 0
-    known_states = set([x.generalize() for x in generation])
+    generation = Queue.PriorityQueue()
+    generation.put((State(state, 0, 0).score, State(state, 0, 0)))
+    known_states = set(State(state, 0, 0).generalize())
+    i = 0
     while True:
-        moves += 1
-        print('moves: {}'.format(moves))
-        print('generation: {}'.format(len(generation)))
-        print('known: {}'.format(len(known_states)))
-        new_generation = []
-        for state in generation:
-            new_generation += [x for x in state.iterate() if x.generalize() not in known_states]
-            known_states |= set([x.generalize() for x in new_generation])
-        if any([x.solved() for x in new_generation]):
-            print('solved in {} moves'.format(moves))
+        state = generation.get()[1]
+        new_generations = [x for x in state.iterate() if x.generalize() not in known_states]
+        for s in new_generations:
+            generation.put((s.score, s))
+        known_states |= set([x.generalize() for x in new_generations])
+        if any([x.solved() for x in new_generations]):
+            solved = [x for x in new_generations if x.solved()]
+            print('solved in {} moves'.format(solved[0].moves))
+            print('solved in {} iterations'.format(i))
             break
-        generation = new_generation
+        if i % 1000 == 0:
+            print generation.qsize()
+        i += 1
 
 if __name__ == '__main__':
     main()
