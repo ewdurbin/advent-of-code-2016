@@ -62,22 +62,19 @@ class State(object):
                 return False
         return True
 
-def generalize_state(state):
-    new_state = collections.defaultdict(list)
-    identifiers = list(string.ascii_lowercase)
-    seen_elements = {}
-    for floor, items in state.iteritems():
-        if floor == 'E':
-            new_state['E'] = items
-            continue
-        for item in sorted(items):
-            parts = item.split('-')
-            element = parts[1]
-            if element not in seen_elements:
-                seen_elements[element] = identifiers.pop(0)
-            parts[1] = seen_elements[element]
-            new_state[floor].append('-'.join(parts))
-    return new_state
+    def generalize(self):
+        identifiers = list(string.ascii_lowercase)
+        new_floors = [[] for x in range(len(self.floors))]
+        seen_elements = {}
+        for i, floor in enumerate(self.floors):
+            for item in sorted(floor):
+                parts = item.split('-')
+                element = parts[1]
+                if element not in seen_elements:
+                    seen_elements[element] = identifiers.pop(0)
+                parts[1] = seen_elements[element]
+                new_floors[i].append('-'.join(parts))
+        return State(new_floors, self.elevator).__repr__()
 
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
@@ -91,7 +88,7 @@ def main():
                 state[i].append('chip-' + floor.split()[j-1].split('-')[0])
     generation = [State(state, 0)]
     moves = 0
-    known_states = [x.__repr__() for x in generation]
+    known_states = [x.generalize() for x in generation]
     while True:
         moves += 1
         print('moves: {}'.format(moves))
@@ -103,8 +100,8 @@ def main():
         if any([x.solved() for x in new_generation]):
             print('solved in {} moves'.format(moves))
             break
-        generation = [x for x in new_generation if x.__repr__() not in known_states]
-        known_states += [x.__repr__() for x in new_generation if x.__repr__() not in known_states]
+        generation = [x for x in new_generation if x.generalize() not in known_states]
+        known_states += [x.generalize() for x in new_generation if x.generalize() not in known_states]
 
 if __name__ == '__main__':
     main()
