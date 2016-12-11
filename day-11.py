@@ -49,8 +49,14 @@ class State(object):
         items = list(itertools.combinations(self.floors[self.elevator], 2))
         items += list(itertools.combinations(self.floors[self.elevator], 1))
 
+        moves = [move for move in itertools.product(dest_floors, items) if self.apply(*move).valid()]
+        if any([len(y) == 2 for x, y in moves if x > self.elevator]):
+            moves = [(x, y) for x, y in moves if not (len(y) == 1 and x > self.elevator)]
+        if any([len(y) == 1 for x, y in moves if x < self.elevator]):
+            moves = [(x, y) for x, y in moves if not (len(y) == 2 and x < self.elevator)]
+
         new_states = []
-        for move in [move for move in itertools.product(dest_floors, items)]:
+        for move in moves:
             new_state = self.apply(*move)
             if new_state.valid():
                 new_states.append(new_state)
@@ -88,7 +94,7 @@ def main():
                 state[i].append('chip-' + floor.split()[j-1].split('-')[0])
     generation = [State(state, 0)]
     moves = 0
-    known_states = [x.generalize() for x in generation]
+    known_states = set([x.generalize() for x in generation])
     while True:
         moves += 1
         print('moves: {}'.format(moves))
@@ -96,12 +102,12 @@ def main():
         print('known: {}'.format(len(known_states)))
         new_generation = []
         for state in generation:
-            new_generation += state.iterate()
+            new_generation += [x for x in state.iterate() if x.generalize() not in known_states]
+            known_states |= set([x.generalize() for x in new_generation])
         if any([x.solved() for x in new_generation]):
             print('solved in {} moves'.format(moves))
             break
-        generation = [x for x in new_generation if x.generalize() not in known_states]
-        known_states += [x.generalize() for x in new_generation if x.generalize() not in known_states]
+        generation = new_generation
 
 if __name__ == '__main__':
     main()
