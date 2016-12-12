@@ -4,7 +4,7 @@ import sys
 
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
-    registers = {'a': 0, 'b': 0, 'c': 0, 'd': 0}
+    registers = {'a': 0, 'b': 0, 'c': 1, 'd': 0}
     i = 0
     while True:
         if i >= len(input_data):
