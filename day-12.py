@@ -6,22 +6,20 @@ def main():
     input_data = sys.stdin.read().rstrip().split('\n')
     registers = {'a': 0, 'b': 0, 'c': 1, 'd': 0}
     i = 0
-    while True:
-        if i >= len(input_data):
-            break
-        instr = input_data[i]
-        if instr.startswith('cpy'):
-            if instr.split()[1] in 'abcd':
-                value = registers[instr.split()[1]]
+    while i < len(input_data):
+        instr = input_data[i].split()
+        if instr[0] == 'cpy':
+            if instr[1] in 'abcd':
+                value = registers[instr[1]]
             else:
-                value = int(instr.split()[1])
-            registers[instr.split()[2]] = value
-        if instr.startswith('inc'):
-            registers[instr.split()[1]] += 1
-        if instr.startswith('dec'):
-            registers[instr.split()[1]] -= 1
-        if instr.startswith('jnz'):
-            x, y = instr.split()[1:3]
+                value = int(instr[1])
+            registers[instr[2]] = value
+        if instr[0] == 'inc':
+            registers[instr[1]] += 1
+        if instr[0] == 'dec':
+            registers[instr[1]] -= 1
+        if instr[0] == 'jnz':
+            x, y = instr[1:3]
             if x in 'abcd':
                 value = registers[x]
             else:
