@@ -1,9 +1,10 @@
 #!/usr/bin/env/python
 
+import sys
 import hashlib
 
 def main():
-    input_data = 'wtnhxymk'
+    input_data = sys.stdin.read().rstrip()
     i = 0
     code = {'0': None, '1': None, '2': None, '3': None, '4': None, '5': None, '6': None, '7': None}
     while True:
