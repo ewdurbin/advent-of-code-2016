@@ -29,7 +29,7 @@ def main():
                 continue
         i+=1
 
-    print(registers['a'])
+    print(i, registers['a'])
 
 if __name__ == '__main__':
     main()
