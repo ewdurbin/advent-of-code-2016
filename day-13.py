@@ -40,11 +40,10 @@ def main():
     input_data = sys.stdin.read().rstrip().split('\n')
     fav_number = int(input_data[0])
     start = Space(1, 1, fav_number)
-    target = (31, 39)
     generation = [start]
-    known_places = set(repr(start))
+    known_places = set([repr(start)])
     moves = 0
-    while True:
+    while moves < 50:
         moves += 1
         print('moves: {}'.format(moves))
         print('generation: {}'.format(len(generation)))
@@ -53,10 +52,8 @@ def main():
         for space in generation:
             new_generation += [s for s in space.iterate() if repr(s) not in known_places]
             known_places |= set([repr(s) for s in new_generation])
-        if any([s.solved(*target) for s in new_generation]):
-            print('solved in {} moves'.format(moves))
-            break
         generation = new_generation
+    print(len(known_places))
 
 if __name__ == '__main__':
     main()
