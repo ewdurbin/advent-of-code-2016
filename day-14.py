@@ -11,6 +11,8 @@ def main():
     keys = []
     while True:
         key = hashlib.md5("%s%s" % (input_data, i)).hexdigest()
+        for _ in range(2016):
+             key = hashlib.md5(key).hexdigest()
         for j in range(len(key)-2):
             if key[j] == key[j+1] and key[j] == key[j+2]:
                 candidates.append((i, key[j], key))
