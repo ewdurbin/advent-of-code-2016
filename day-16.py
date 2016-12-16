@@ -27,9 +27,9 @@ def checksum(data):
 def main():
     input_data = sys.stdin.read().rstrip()
     data = input_data
-    while len(data) < 272:
+    while len(data) < 35651584:
         data = data + '0' + invert(data)
-    data = data[:272+1]
+    data = data[:35651584+1]
     print checksum(data)
 
 
