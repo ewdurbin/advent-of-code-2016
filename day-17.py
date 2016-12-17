@@ -32,7 +32,7 @@ class Space(object):
         for direction, (x, y) in neighbors.items():
             if x < 0 or y < 0:
                 continue
-            if x > 3 or y > 3:
+            if x > 3 or y > 3:  # Critical condition that i _totally_ missed on first part
                 continue
             new_space = Space(x, y, self.input_data, self.path + [direction])
             ses.append(new_space)
