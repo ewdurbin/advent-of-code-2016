@@ -32,7 +32,8 @@ class Space(object):
         for direction, (x, y) in neighbors.items():
             if x < 0 or y < 0:
                 continue
-            print(direction, (x, y))
+            if x > 3 or y > 3:
+                continue
             new_space = Space(x, y, self.input_data, self.path + [direction])
             ses.append(new_space)
         return ses
@@ -43,18 +44,17 @@ def main():
     path = []
     digest = hashlib.md5(input_data + ''.join(path)).hexdigest()
     generation = [Space(0, 0, input_data, [])]
+    paths = []
     while True:
         new_generation = []
         for space in generation:
             new_generation += [s for s in space.iterate()]
         if any([x.solved(3,3) for x in new_generation]):
-            print('solved')
-            print[''.join(x.path) for x in new_generation if x.solved(3,3)]
-            break
+            paths += [''.join(x.path) for x in new_generation if x.solved(3,3)]
         if len(new_generation) == 0:
-            print('failed')
             break
-        generation = new_generation
+        generation = [x for x in new_generation if x.solved(3,3) == False]
+    print max([len(p) for p in paths])
 
 
 if __name__ == '__main__':
