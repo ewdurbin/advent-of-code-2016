@@ -5,7 +5,7 @@ import sys
 def main():
     input_data = sys.stdin.read().rstrip()
     board = [input_data]
-    for i in range(1,40):
+    for i in range(1,400000):
         previous_row = '.' + board[i-1] + '.'
         row = ''
         for i in range(len(previous_row)-2):
