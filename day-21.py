@@ -26,8 +26,8 @@ def scramble(in_pass, input_data):
             amt = int(parts[2])
             password = password[-amt:] + password[:-amt]
         if instruction.startswith('rotate based on'):
-            amt = ''.join(password).find(parts[6]) + 1
-            if amt > 4:
+            amt = ''.join(password).find(parts[6]) + 1  # WELL SHIT
+            if amt > 4:  # I HAD amt >= 4 HERE FOR SO LONG. COMPLETELY BLEW LEADERBOARD ONE LINE UP
                 amt += 1
             for i in range(amt):
                 password = password[-1:] + password[:-1]
