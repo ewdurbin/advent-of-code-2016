@@ -1,10 +1,10 @@
 #!/usr/bin/env/python
 
+from itertools import permutations
 import sys
 
-def main():
-    input_data = sys.stdin.read().rstrip().split('\n')
-    password = [c for c in 'abcdefgh']
+def scramble(in_pass, input_data):
+    password = [c for c in in_pass]
     for instruction in input_data:
         parts = instruction.split()
         if instruction.startswith('swap position'):
@@ -38,7 +38,15 @@ def main():
             remove, insert = (int(parts[2]), int(parts[5]))
             value = password.pop(remove)
             password = password[:insert] + [value] + password[insert:]
-    print ''.join(password)
+    return ''.join(password)
+
+
+def main():
+    input_data = sys.stdin.read().rstrip().split('\n')
+    for test_pass in permutations('fbgdceah'):
+        if scramble(''.join(test_pass), input_data) == 'fbgdceah':
+            print(''.join(test_pass))
+            break
 
 if __name__ == '__main__':
     main()
