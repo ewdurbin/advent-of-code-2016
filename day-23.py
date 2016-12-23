@@ -62,7 +62,7 @@ def compute(input_data, registers):
 
 def main():
     input_data = sys.stdin.read().rstrip().split('\n')
-    registers = {'a': 7, 'b': 0, 'c': 0, 'd': 0}
+    registers = {'a': 12, 'b': 0, 'c': 0, 'd': 0}
     compute(input_data, registers)
 
 
